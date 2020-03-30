@@ -45,7 +45,7 @@ if( ! ( $db_handle = mysqli_connect($db_server,$db_user,$db_pwd ) ) || !mysqli_s
 }
 //Abfrage zu STRICT_TRANS_TABLES keiner mag Grenzen also raus damit!
 //Für jede Zeile in @@sql_mode falls sich da was eingeschlichen hat.
-$result = mysqli_query( $db, "SELECT @@sql_mode");
+$result = mysqli_query( $db_handle, "SELECT @@sql_mode");
 while ($row = $result->fetch_assoc()) {
     if(strpos($row['@@sql_mode'], "STRICT_TRANS_TABLES") === 0){
         $sqlmode = str_replace("STRICT_TRANS_TABLES,","",$row['@@sql_mode']);
