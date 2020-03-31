@@ -207,13 +207,12 @@ function check_3() {
         <th>mysqli_connect():</th>
     <?php
     $db = mysqli_connect($db_server,$db_user,$db_pwd);
-################editbyELIAS H. END###remove##STRICT_TRANS_TABLES##########
+//change SQL-MODE
 $result = mysqli_query( $db, "SELECT @@sql_mode");
 while ($row = $result->fetch_assoc()) {
     $sqlmode = str_replace("STRICT_TRANS_TABLES,","",$row['@@sql_mode']);
     mysqli_query( $db, "SET SESSION sql_mode = "."'"."$sqlmode"."'");
 }
-################editbyELIAS H. END###remove##STRICT_TRANS_TABLES##########
 //changed to remove STRICT_TRANS_TABLE
     if( $db ) {
       ?> <td class='ok'>Verbindung zum MySQL Server OK </td></tr> <?php
