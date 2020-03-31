@@ -51,9 +51,9 @@ while ($row = $result->fetch_assoc()) {
         $sqlmode = str_replace("STRICT_TRANS_TABLES,","",$row['@@sql_mode']);
         $sqlmode = str_replace(",STRICT_TRANS_TABLES","",$row['@@sql_mode']);
         $sqlmode = str_replace("STRICT_TRANS_TABLES","",$row['@@sql_mode']);
-        mysqli_query( $db, "SET SESSION sql_mode = "."'"."$sqlmode"."'");
+        mysqli_query( $db_handle, "SET SESSION sql_mode = "."'"."$sqlmode"."'");
         error_log("[WARNING]foodcoop/code/common.php ELIAS warnt: trying session without STRICT_TRANS_TABLES sql_mode! ", 0);
-        $result = mysqli_query( $db, "SELECT @@sql_mode");
+        $result = mysqli_query( $db_handle, "SELECT @@sql_mode");
         while ($row = $result->fetch_assoc()) {
             if(strpos($row['@@sql_mode'], "STRICT_TRANS_TABLES") !== 0){
                 error_log("[WARNING]foodcoop/code/common.php ELIAS warnt: SUCCESS! session sql_mode is now  = ".$row['@@sql_mode'], 0);
