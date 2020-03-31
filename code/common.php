@@ -43,6 +43,32 @@ if( ! ( $db_handle = mysqli_connect($db_server,$db_user,$db_pwd ) ) || !mysqli_s
   echo "<html><body><h1>Datenbankfehler!</h1>Konnte keine Verbindung zur Datenbank herstellen... Bitte später nochmal versuchen.</body></html>";
   exit();
 }
+//Abfrage zu STRICT_TRANS_TABLES keiner mag Grenzen also raus damit!
+//Für jede Zeile in @@sql_mode falls sich da was eingeschlichen hat.
+$result = mysqli_query( $db_handle, "SELECT @@sql_mode");
+while ($row = $result->fetch_assoc()) {
+    if(strpos($row['@@sql_mode'], "STRICT_TRANS_TABLES") === 0){
+        $sqlmode = str_replace("STRICT_TRANS_TABLES,","",$row['@@sql_mode']);
+        $sqlmode = str_replace(",STRICT_TRANS_TABLES","",$row['@@sql_mode']);
+        $sqlmode = str_replace("STRICT_TRANS_TABLES","",$row['@@sql_mode']);
+        mysqli_query( $db_handle, "SET SESSION sql_mode = "."'"."$sqlmode"."'");
+        error_log("[WARNING]foodcoop/code/common.php ELIAS warnt: trying session without STRICT_TRANS_TABLES sql_mode! ", 0);
+        $result = mysqli_query( $db_handle, "SELECT @@sql_mode");
+        while ($row = $result->fetch_assoc()) {
+            if(strpos($row['@@sql_mode'], "STRICT_TRANS_TABLES") !== 0){
+                error_log("[WARNING]foodcoop/code/common.php ELIAS warnt: SUCCESS! session sql_mode is now  = ".$row['@@sql_mode'], 0);
+            }
+        }
+    }
+  /* only for debug #spamthelogfiles 
+    else{
+        error_log("[WARNING]foodcoop/code/common.php ELIAS warnt: nothing changed in sql mode STRICT_TRANS_TABLES is not set!", 0);
+        echo "<br>          STRICT_TRANS_TABLES is not set! <br>";
+    }*/
+}
+
+
+
 
 // die restliche konfiguration koennen wir aus der leitvariablen-tabelle lesen
 // (skripte koennen dann persistente variable einfach speichern, aendern, und
