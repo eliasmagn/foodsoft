@@ -13,13 +13,12 @@ exit(1);  // keep disabled when not needed
 require_once('code/config.php');
 
 $db = mysqli_connect($db_server,$db_user,$db_pwd);
-################editbyELIAS H. END###remove##STRICT_TRANS_TABLES##########
+//change SQL-MODE 
 $result = mysqli_query( $db, "SELECT @@sql_mode");
 while ($row = $result->fetch_assoc()) {
     $sqlmode = str_replace("STRICT_TRANS_TABLES,","",$row['@@sql_mode']);
     mysqli_query( $db, "SET SESSION sql_mode = "."'"."$sqlmode"."'");
 }
-################editbyELIAS H. END###remove##STRICT_TRANS_TABLES##########
 $db_selected = mysqli_select_db( $db, $db_name );
 
 $tables = array();
