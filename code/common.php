@@ -43,8 +43,9 @@ if( ! ( $db_handle = mysqli_connect($db_server,$db_user,$db_pwd ) ) || !mysqli_s
   echo "<html><body><h1>Datenbankfehler!</h1>Konnte keine Verbindung zur Datenbank herstellen... Bitte später nochmal versuchen.</body></html>";
   exit();
 }
-//Abfrage zu STRICT_TRANS_TABLES keiner mag Grenzen also raus damit!
+//Abfrage zu STRICT_TRANS_TABLES
 //Für jede Zeile in @@sql_mode falls sich da was eingeschlichen hat.
+//Warnings(ERROR-LOG) sind wahrscheinlich nicht nötig.
 $result = mysqli_query( $db_handle, "SELECT @@sql_mode");
 while ($row = $result->fetch_assoc()) {
     if(strpos($row['@@sql_mode'], "STRICT_TRANS_TABLES") === 0){
