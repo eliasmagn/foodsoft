@@ -17,8 +17,17 @@
 <?php
 
 require_once('code/config.php');
-
+  
+// proof ips behind proxies, dont blame proxies.
 $remote_ip = getenv('REMOTE_ADDR');
+if (filter_var($remote_ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false){
+  foreach (array( 'HTTP_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_FORWARDED') as $pos){
+    if (array_key_exists($pos, $_SERVER) === true){
+      $remote_ip = getenv($pos);
+    }
+  }
+}
+  
 if( $allow_setup_from and preg_match( '/^'.$allow_setup_from.'/', $remote_ip ) ) {
   true;
 } else {
@@ -207,13 +216,12 @@ function check_3() {
         <th>mysqli_connect():</th>
     <?php
     $db = mysqli_connect($db_server,$db_user,$db_pwd);
-################editbyELIAS H. END###remove##STRICT_TRANS_TABLES##########
+//change SQL-MODE
 $result = mysqli_query( $db, "SELECT @@sql_mode");
 while ($row = $result->fetch_assoc()) {
     $sqlmode = str_replace("STRICT_TRANS_TABLES,","",$row['@@sql_mode']);
     mysqli_query( $db, "SET SESSION sql_mode = "."'"."$sqlmode"."'");
 }
-################editbyELIAS H. END###remove##STRICT_TRANS_TABLES##########
 //changed to remove STRICT_TRANS_TABLE
     if( $db ) {
       ?> <td class='ok'>Verbindung zum MySQL Server OK </td></tr> <?php
